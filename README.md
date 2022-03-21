@@ -101,7 +101,25 @@ learning, perform some experiments and present your findings to the group. The m
 better. Examples of tasks are given below, but you are encouraged to suggest your own topics.
 
 - **Confidence map visualization**<br/>
+  Implement a code that will visualize binary MLP classifier confidence field for a 2D binary classification dataset,
+  for example like [here](http://playground.tensorflow.org/) at the diagram on the right. After that perform experiments
+  by varying dataset structure, activation functions, neural network hyperparameters, etc. Look what difference your
+  changes make to the diagram and suggest some dos and don'ts based on that.
 - **Image embedding space visualization**<br/>
+  In machine learning, a term *embedding* usually refers to a low-dimensional representation of a high-dimensional
+  object that is learned by a model. For example, consider an MLP model with 50 neurons at some layer. If we feed a
+  MNIST image (784-dimensional vector) to the MLP, outputs of this layer is a 50-dimensional vector that may be treated
+  as an embedding for this image. The better the model is trained, the better the embeddings represent their original
+  objects. Note: for MNIST, last classification layer provides a 10-dimensional embedding vector.
+
+  Embeddings have a relatively low number of dimensions, but not low enough to be adequately visualized. It is suggested
+  to use t-SNE algorithm to further decrease number of dimensions to 3 or 2.
+
+  You are to prepare a code for visualizing embeddings for MNIST (or other dataset) images, e.g.
+  like [here](https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding#/media/File:T-SNE_Embedding_of_MNIST.png)
+  . Similarly to the task above, you should perform visualization experiments, draw some conclusions and present the
+  results. You can try applying t-SNE to raw image vectors, MLP activations (pre-ReLU preferably) for different layers
+  and network structures, hyperparameters, etc., and compare them by some clustering metric or just what looks "better".
 - **Adversarial images generation**<br/>
 - **Training with image augmentation**<br/>
 - **Training for edge detection task**<br/>
