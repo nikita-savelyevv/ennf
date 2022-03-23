@@ -134,6 +134,30 @@ better. Examples of tasks are given below, but you are encouraged to suggest you
   different classes, methods, hyperparameters, architectures etc. Key metrics are original confidence, confidence for
   adversarial image, their difference magnitude. Besides, would be interesting to see targeted transitions from one
   class to another, for example transition from MNIST digit 4 to 9.
+- **Image gradients and first layer weights visualization**<br/>
+  Gradient of per-class predictions over the input image can be useful in understanding what the model "looks" for when
+  performing classification. Large magnitude of a gradient values reflects the importance of corresponding pixel for
+  classification, and its sign (positive or negative) reflects whether the pixel should be brighter of dimmer for
+  classification confidence to increase.
+
+  Another visualization that might be useful is the visualization of the first MLP layer's weights. As each neuron in
+  the first layer is connected to each pixel of an input image we can use values of this neuron's weights to see which
+  pixels will strongly contribute to neuron's activation. The magnitude of the weight reflects the "strength" of the
+  contribution and its sign reflects whether the brightness of the pixel leads to increase or decrease of the
+  activation.
+
+  In both cases you can reshape the visualized value to the shape of a dataset image and plot it as a grayscale mask.
+
+  For the case of the gradient visualization it would be interesting to demonstrate (1) gradient of ground truth class
+  prediction over an image, (2) gradient of non ground truth class predictions over an image. Ofcourse you should also
+  perform these experiments for images from different classes.
+
+  For the case of weight visualization you may plot weight masks for individual neurons or compute the mean of weights
+  corresponding to the same pixel across all neurons of the first layer. In the first case it could be beneficial to
+  reduce the number of neurons in the first layer because the visualization should become more meaningful as the small
+  number of neurons makes each of them more distinct. You should also try to visualize weights for the case when
+  MLP has no hidden layer, i.e. it has a single linear layer transforming image pixels straight into classification
+  logits.
 - **Training with image augmentation**<br/>
   Modern computer vision machine learning models are often trained with augmentation techniques. Image augmentation is
   used to enrich limited training data by introducing slight random alterations such as addition of small noise,
@@ -159,7 +183,29 @@ better. Examples of tasks are given below, but you are encouraged to suggest you
   The total loss for each image would be the mean per pixel loss. The metric for measuring the performance of the model
   might be Precision, Recall, F1-score or Intersection over Union (IoU).
 - **Transfer learning**<br/>
-- **Knowledge distillation**<br/>
+  Transfer learning is a popular technique in machine learning in general and in computer vision in particular. In the
+  most basic sense it is when one takes a model pre-trained on some large dataset and uses it to solve other downstream
+  task of their need. In such case the main part of the network referred to as backbone is taken as is but the last
+  layer, e.g. a classification head, is replaced by the new one used specifically for solving the downstream task. The
+  modified network is then fine-tuned on the downstream task, however the backbone weights are frozen and only the new
+  head layer is let to be trained. The effect of such approach is twofold: firstly, as the backbone is well-trained it
+  serves as great feature extractor, secondly, since the number of parameters in the new detection (or some other)
+  head is small, it is relatively easy to train it and obtain good results.
+
+  Despite the fact that the MLP architecture considered in our case cannot be considered as a strong backbone, we can
+  still showcase the core principles of this approach. First, you are to train one MLP network that will serve as
+  backbone. Then you are to replace the last layer of this MLP by another one that will be used to solve a
+  classification task. It is suggested to train backbone for auto-encoding images from your dataset. The auto-encoder
+  architecture will have two fully connected layers. It takes an image, transforms it to a significantly smaller number
+  of dimensions (bottleneck) and then tries to reconstruct the original image for example by per-pixel binary cross
+  entropy. Because the number of neurons in the bottleneck is small, we can expect it to be a good feature extractor.
+  After the auto-encoder is trained, the layer after the bottleneck is thrown out and replaced by the new fully
+  connected layer that will perform classification. When training for classification, we freeze the parameters of the
+  previously trained layer and let only the classification layer to be trained.
+
+  When the described pipeline is ready, you may perform various experiments, for example by changing the size of the
+  bottleneck, number of epochs that the auto-encoder or final classificator is trained, etc. It is also important to
+  compare the accuracy of such approach to the case when we train for classification task from the start.
 - **Training on unbalanced dataset**<br/>
   The datasets considered in this course are balanced in the sense that there are equal number of samples of each
   category. Usually that is not the case which worsens the performance of the trained model. Hence, some efforts have to
